@@ -1,18 +1,17 @@
-#include <bits/stdc++.h>
-
-using namespace std;
+#include <iostream>
+#include <sstream>
 
 int main() {
   std::string line;
-  while (std::getline(cin, line)) {
+  while (std::getline(std::cin, line)) {
     std::istringstream iss(line);
-    string Key;
+    std::string Key;
     iss >> Key;
     do {
-      string word;
+      std::string word;
       iss >> word;
       if (word.empty()) break;
-      cout << word << "\t1\n";
+      std::cout << word << "\t1\n";
     } while (iss);
   }
   return 0;
