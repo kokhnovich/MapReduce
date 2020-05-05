@@ -2,8 +2,11 @@
 
 int main() {
   std::string word;
-  while (std::cin >> word) {
-    std::cout << word << " 1" << "\n";
+  int res = 0, count;
+  while (std::cin >> word >> count) {
+    res += count;
   }
+
+  std::cout << word << '\t' << res << std::endl;
   return 0;
 }
