@@ -44,6 +44,7 @@ int main(int argc, char* argv[]) {
 
     std::vector<std::string> input_files;
     std::vector<std::string> output_files;
+    std::vector<bp::child> child_processes;
     for (int i = 0; i < words.size();) {
       std::string input_file = GetFileName("input", i);
       std::string output_file = GetFileName("output", i);
@@ -57,11 +58,14 @@ int main(int argc, char* argv[]) {
         os << words[i].first << ' ' << words[i].second << std::endl;
         ++i;
       }
-      auto ret_code = bp::system(script_path, bp::std_out > output_file, bp::std_err > stderr, bp::std_in < input_file);
-      if (ret_code != 0) {
-        std::cerr << "something went wrong..." << std::endl;
-        return ret_code;
-      }
+      child_processes.emplace_back(script_path,
+                                   bp::std_out > output_file,
+                                   bp::std_err > stderr,
+                                   bp::std_in < input_file);
+    }
+
+    for (auto& child : child_processes) {
+      child.wait();
     }
 
     if (RemoveFiles(input_files) != 0) {
