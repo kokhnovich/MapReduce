@@ -19,14 +19,14 @@ std::string GetFileName(const std::string& type, int name) {
 }
 
 int main(int argc, char* argv[]) {
+  if (argc != 5) {
+    std::cerr << "Script requires 4 arguments" << std::endl;
+  }
   std::string mode = argv[1];
   std::string script_path = argv[2];
   std::string input_path = argv[3];
   std::string output_path = argv[4];
-//  std::cerr << mode << std::endl;
-//  std::cerr << script_path << std::endl;
-//  std::cerr << input_path << std::endl;
-//  std::cerr << output_path << std::endl;
+
   if (mode == "map") {
     bp::system(script_path, bp::std_out > output_path, bp::std_err > stderr, bp::std_in < input_path);
   } else if (mode == "reduce") {
@@ -36,14 +36,11 @@ int main(int argc, char* argv[]) {
       int cnt;
       std::ifstream stream(input_path);
       while (stream >> word >> cnt) {
-        // std::cerr << word << " " << cnt << std::endl;
         words.emplace_back(word, cnt);
       }
     }
-    // std::cerr << std::endl;
 
     std::sort(words.begin(), words.end());
-
 
     std::vector<std::string> input_files;
     std::vector<std::string> output_files;
@@ -58,7 +55,6 @@ int main(int argc, char* argv[]) {
       int first_index = i;
       while (i < words.size() && words[i].first == words[first_index].first) {
         os << words[i].first << ' ' << words[i].second << std::endl;
-        // std::cerr << words[i].first << ' ' << words[i].second << std::endl;
         ++i;
       }
       auto ret_code = bp::system(script_path, bp::std_out > output_file, bp::std_err > stderr, bp::std_in < input_file);
