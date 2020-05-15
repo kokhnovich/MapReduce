@@ -3,15 +3,8 @@
 
 namespace bp = boost::process;
 
-int RemoveFiles(const std::vector<std::string>& file_names) {
-  for (const auto& file_name : file_names) {
-    int ret_code = bp::system("rm " + file_name);
-    if (ret_code != 0) {
-      std::cerr << "can't remove file " + file_name << std::endl;
-      return ret_code;
-    }
-  }
-  return 0;
+int RemoveFile(const std::string& file_name) {
+  return remove(file_name.c_str());
 }
 
 std::string GetFileName(const std::string& type, int name) {
@@ -68,8 +61,12 @@ int main(int argc, char* argv[]) {
       child.wait();
     }
 
-    if (RemoveFiles(input_files) != 0) {
-      return 1;
+    for (const auto& file_name : input_files) {
+      int code = RemoveFile(file_name);
+      if (code != 0) {
+        std::cerr << "cannot remove file " << file_name << std::endl;
+        return code;
+      }
     }
 
     { // output data
@@ -82,8 +79,13 @@ int main(int argc, char* argv[]) {
           stream << word << ' ' << count << std::endl;
         }
       }
-      if (RemoveFiles(output_files) != 0) {
-        return 1;
+
+      for (const auto& file_name : output_files) {
+        int code = RemoveFile(file_name);
+        if (code != 0) {
+          std::cerr << "cannot remove file " << file_name << std::endl;
+          return code;
+        }
       }
     }
   } else {
